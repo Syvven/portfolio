@@ -24,6 +24,9 @@ h1
     margin-top: 0;
     text-align: center;
     font-size: 6vmin;
+    text-decoration:underline;
+    text-decoration-thickness:5%;
+    text-underline-offset:9%;
 }
 
 h2
@@ -31,6 +34,11 @@ h2
     text-align: center;
     font-size: 3.5vmin;
 }
+
+a:link{ text-decoration: none; }
+a:visited{ text-decoration: none; }
+a:hover{ text-decoration: none; }
+a:active{ text-decoration: none; }
 
 /***********/
 /* Classes */
@@ -78,7 +86,7 @@ h2
     height: 5vh;
 }
 
-#top-row
+#about-me-card
 {
     background-color:rgb(116, 62, 62);
     border-color: antiquewhite;
@@ -86,10 +94,40 @@ h2
     margin-top: 4%;
 }
 
-#second-row
+#links-card
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    margin-top: 4%;
+}
+
+#about-me-card:hover 
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
+}
+
+#usable-cards
 {
     background-color: antiquewhite;
     border-color: rgb(116, 62, 62);
     color:rgb(116, 62, 62);
     margin-top: 4%;
+}
+
+#unused-cards
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
+    margin-top: 4%;
+}
+
+#usable-cards:hover
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
 }
