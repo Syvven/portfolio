@@ -1,0 +1,79 @@
+/********/
+/* id's */
+/********/
+
+body 
+{
+    overflow: hidden;
+    margin: 0;
+}
+
+button
+{
+    padding: 5vw;
+}
+
+img 
+{
+    width:11.5%;
+    height:100%;
+}
+
+h2
+{
+    text-align: center;
+    font-size: 3.2vmax;
+}
+
+/***********/
+/* Classes */
+/***********/
+
+.column 
+{
+    float: left;
+    width: 50%;
+}
+
+.row:after 
+{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.ui
+{
+    position: absolute;
+    width: 100%;
+}
+
+.year-card
+{
+    text-align: center;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    background-color: antiquewhite;
+    border-style:double;
+    border-width: 1vh;
+    width: 75%;
+    height: 9vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#top-row
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    margin-top: 5%;
+}
+
+#second-row
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
+    margin-top: 9%;
+}
