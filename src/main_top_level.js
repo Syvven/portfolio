@@ -3,6 +3,12 @@ import WebGL from './webGLCheck.js';
 
 var scene, renderer, camera;
 
+document.addEventListener(onclick, (e) => {
+    if (e.key === "e") {
+        document.getElementById("directory-ui").display = "none";
+    }
+});
+
 function setup() 
 {
     /* 
