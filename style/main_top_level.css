@@ -15,8 +15,31 @@ button
 
 img 
 {
-    width:11.5%;
+    width:13%;
     height:100%;
+}
+
+.about-me-img
+{
+    height: 90%;
+    width: 90%;
+    position: relative;
+    margin-top: 5%;
+    margin-left: auto;
+}
+
+.background-for-image
+{
+    position: relative;
+    background-color:black;
+    width: 18%;
+    height:25vh;
+    left: .7%;
+    top: -3vh;
+    border-style:double;
+    border-width: 1vh;
+    border-color: antiquewhite;
+    float: left;
 }
 
 h1
@@ -47,7 +70,8 @@ a:active{ text-decoration: none; }
 .column 
 {
     float: left;
-    width: 50%;
+    width: 35%;
+    margin-left: 9.5%;
 }
 
 .row:after 
@@ -63,6 +87,37 @@ a:active{ text-decoration: none; }
     width: 100%;
 }
 
+#about-me-ui
+{
+    display: none;
+}
+
+.about-me-description
+{
+    text-align: center;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    background-color: antiquewhite;
+    border-style:double;
+    border-width: 1vh;
+    width: 70%;
+    height: 50vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1vh;
+    position: relative;
+    border-color: rgb(116, 62, 62);
+}
+
+#description-text
+{
+    margin-left: 1%;
+    margin-top: -1%;
+    margin-bottom: 1%;
+    text-align: left;
+    font-size: 2vmin;
+}
+
 .year-card
 {
     text-align: center;
@@ -71,7 +126,7 @@ a:active{ text-decoration: none; }
     background-color: antiquewhite;
     border-style:double;
     border-width: 1vh;
-    width: 75%;
+    width: 100%;
     height: 9vh;
     margin-left: auto;
     margin-right: auto;
@@ -84,6 +139,7 @@ a:active{ text-decoration: none; }
     color:antiquewhite;
     margin-top: 1%;
     height: 5vh;
+    width: 75%;
 }
 
 #about-me-card
@@ -92,6 +148,24 @@ a:active{ text-decoration: none; }
     border-color: antiquewhite;
     color:antiquewhite;
     margin-top: 4%;
+}
+
+#return-card
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    margin-top: 1vh;
+    width: 50%;
+    height: 5vh;
+    padding-top: 0%;
+} 
+
+#return-card:hover 
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
 }
 
 #links-card

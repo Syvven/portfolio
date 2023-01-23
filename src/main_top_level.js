@@ -3,12 +3,6 @@ import WebGL from './webGLCheck.js';
 
 var scene, renderer, camera;
 
-document.addEventListener(onclick, (e) => {
-    if (e.key === "e") {
-        document.getElementById("directory-ui").display = "none";
-    }
-});
-
 function setup() 
 {
     /* 
@@ -51,6 +45,18 @@ function onWindowResize()
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.render(scene, camera);
 }
+
+document.getElementById("click-me").addEventListener("click", (e) =>
+{
+    document.getElementById("directory-ui").style.display = "none";
+    document.getElementById("about-me-ui").style.display = "inline-block";
+});
+
+document.getElementById("return-card").addEventListener("click", (e) =>
+{
+    document.getElementById("directory-ui").style.display = "inline-block";
+    document.getElementById("about-me-ui").style.display = "none";
+});
 
 if ( WebGL.isWebGLAvailable() ) 
 {
