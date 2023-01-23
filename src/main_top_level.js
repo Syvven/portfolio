@@ -1,5 +1,5 @@
-import * as THREE from 'https://syvven.github.io/portfolio/node_modules/three/src/Three.js';
-import WebGL from 'https://syvven.github.io/portfolio/src/webGLCheck.js';
+import * as THREE from 'https://github.com/syvven/portfolio/node_modules/three/src/Three.js';
+import WebGL from 'https://github.com/syvven/portfolio/src/webGLCheck.js';
 
 var scene, renderer, camera;
 
