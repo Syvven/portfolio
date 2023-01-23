@@ -1,4 +1,4 @@
-import * as THREE from '../node_modules/three/src/Three.js';
+import * as THREE from './node_modules/three/src/Three.js';
 import WebGL from './webGLCheck.js';
 
 var scene, renderer, camera;
