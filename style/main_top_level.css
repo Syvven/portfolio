@@ -126,6 +126,11 @@ a:active{ text-decoration: none; }
     display: none;
 }
 
+#directory-ui
+{
+    margin-top: 10vh;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: .5vw;
@@ -224,6 +229,7 @@ a:active{ text-decoration: none; }
     background-color: antiquewhite;
     border-color: rgb(116, 62, 62);
     color:rgb(116, 62, 62);
+    cursor: pointer;
 }
 
 #links-card
@@ -239,14 +245,68 @@ a:active{ text-decoration: none; }
     background-color: antiquewhite;
     border-color: rgb(116, 62, 62);
     color:rgb(116, 62, 62);
+    cursor: pointer;
 }
 
-#usable-cards
+#card-2020
 {
     background-color: antiquewhite;
     border-color: rgb(116, 62, 62);
     color:rgb(116, 62, 62);
     margin-top: 4%;
+}
+
+#card-2021
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
+    margin-top: 4%;
+}
+
+#card-2022
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
+    margin-top: 4%;
+}
+
+#card-2023
+{
+    background-color: antiquewhite;
+    border-color: rgb(116, 62, 62);
+    color:rgb(116, 62, 62);
+    margin-top: 4%;
+}
+
+#card-2020:hover
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    cursor: pointer;
+}
+#card-2021:hover
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    cursor: pointer;
+}
+#card-2022:hover
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    cursor: pointer;
+}
+#card-2023:hover
+{
+    background-color:rgb(116, 62, 62);
+    border-color: antiquewhite;
+    color:antiquewhite;
+    cursor: pointer;
 }
 
 #unused-cards
@@ -257,9 +317,3 @@ a:active{ text-decoration: none; }
     margin-top: 4%;
 }
 
-#usable-cards:hover
-{
-    background-color:rgb(116, 62, 62);
-    border-color: antiquewhite;
-    color:antiquewhite;
-}
