@@ -1,4 +1,5 @@
 import * as THREE from './node_modules/three/src/Three.js';
+import { QuadraticBezierCurve } from './node_modules/three/src/Three.js';
 import WebGL from './webGLCheck.js';
 
 var scene, renderer, camera;
@@ -6,16 +7,21 @@ var scene, renderer, camera;
 /*
     Next set of variables is for each year's projects
 */
-var at_2020_pos = false;
-var moving_to_2020_pos = false;
 
-var look_x_2020 = 0;
-var look_y_2020 = 100;
-var look_z_2020 = 0;
+var moving = false;
+var reached_destination = false;
 
-var pos_x_2020 = 10;
-var pos_y_2020 = 100;
-var pos_z_2020 = 10;
+var start_position = new THREE.Vector3(50, 50, 200);
+var end_position = new THREE.Vector3();
+
+var start_look_at = new THREE.Vector3(0, 0, 0);
+var end_look_at = new THREE.Vector3();
+var new_look_at = new THREE.Vector3();
+
+var perc = 0;
+var perc_inc = 0.005;
+
+var ui_id = "";
 
 function setup() 
 {
@@ -40,30 +46,56 @@ function setup()
         5000 
     );
 
-    camera.position.set( 50, 50, 200 );
-    camera.lookAt( 0, 0, 0 );
+    camera.position.set(start_position.x, start_position.y, start_position.z);
+    camera.lookAt( start_look_at );
+}
+
+function setup_2020()
+{
+    moving = true;
+    end_position.set(10, 100, 10);
+    end_look_at.set(0, 100, 0)
+
+    ui_id = "ui-2020";
+
+    /* change this when done doing navigation things */
+    var box = new THREE.BoxBufferGeometry(
+        1,
+        1,
+        1
+    );
+
+    var mat = new THREE.MeshBasicMaterial(
+        {
+            color: 0xffffff
+        }
+    )
+
+    var cube = new THREE.Mesh(box, mat);
+    cube.position.set(end_look_at.x, end_look_at.y, end_look_at.z);
+    scene.add(cube);
+}
+
+function destruct_2020()
+{
+
 }
 
 function update_camera_pos(dt)
 {
-    if (moving_to_2020_pos)
+    if (moving)
     {
-        if (at_2020_pos) 
+        perc += perc_inc;
+        camera.position.lerpVectors(start_position, end_position, perc);
+
+        new_look_at.lerpVectors(start_look_at, end_look_at, perc);
+        camera.lookAt(new_look_at);
+            
+        if (Math.abs(camera.position.distanceTo(end_position)) < 1e-10)
         {
-            moving_to_2020_pos = false;
-            at_2020_pos = false;
-        }
-        else
-        {
-            camera.position.x = pos_x_2020;
-            camera.position.y = pos_y_2020;
-            camera.position.z = pos_z_2020;
-            camera.lookAt(
-                look_x_2020,
-                look_y_2020,
-                look_z_2020
-            );
-            at_2020_pos = true;
+            moving = false;
+            document.getElementById(ui_id).style.display = "inline-block";
+            perc = 0;
         }
     }
 }
@@ -106,7 +138,31 @@ document.getElementById("return-card").addEventListener("click", (e) =>
 document.getElementById("card-2020").addEventListener("click", (e) =>
 {
     document.getElementById("directory-ui").style.display = "none";
-    moving_to_2020_pos = true;
+    setup_2020();
+});
+
+document.getElementById("ui-2020-return").addEventListener("click", (e) =>
+{
+    document.getElementById("ui-2020").style.display = "none";
+    document.getElementById("directory-ui").style.display = "inline-block";
+});
+
+document.getElementById("ui-2021-return").addEventListener("click", (e) =>
+{
+    document.getElementById("ui-2021").style.display = "none";
+    document.getElementById("directory-ui").style.display = "inline-block";
+});
+
+document.getElementById("ui-2022-return").addEventListener("click", (e) =>
+{
+    document.getElementById("ui-2022").style.display = "none";
+    document.getElementById("directory-ui").style.display = "inline-block";
+});
+
+document.getElementById("ui-2023-return").addEventListener("click", (e) =>
+{
+    document.getElementById("ui-2023").style.display = "none";
+    document.getElementById("directory-ui").style.display = "inline-block";
 });
 
 if ( WebGL.isWebGLAvailable() ) 
