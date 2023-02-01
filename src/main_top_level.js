@@ -11,7 +11,7 @@ var scene, renderer, camera;
 var moving = false;
 var reached_destination = false;
 
-var start_position = new THREE.Vector3(50, 50, 200);
+var start_position = new THREE.Vector3(50, 50, 50);
 var end_position = new THREE.Vector3();
 
 var start_look_at = new THREE.Vector3(0, 0, 0);
@@ -21,7 +21,26 @@ var new_look_at = new THREE.Vector3();
 var perc = 0;
 var perc_inc = 0.005;
 
-var ui_id = "";
+var ui_id = "directory-ui";
+var previous_id = "directory-ui";
+
+var scenes = {
+    "directory-ui": {
+        objects: [],
+        end_pos: new THREE.Vector3(50, 50, 50),
+        end_look: new THREE.Vector3(0,0,0)
+    },
+    "ui-2022": {
+        objects: [],
+        end_pos: new THREE.Vector3(0, 100, 0),
+        end_look: new THREE.Vector3(-30, 100, 0)
+    },
+    "ui-2023": {
+        objects: [],
+        end_pos: new THREE.Vector3(0, 100, 0),
+        end_look: new THREE.Vector3(0, 100, -30)
+    },
+}
 
 function setup() 
 {
@@ -48,15 +67,6 @@ function setup()
 
     camera.position.set(start_position.x, start_position.y, start_position.z);
     camera.lookAt( start_look_at );
-}
-
-function setup_2020()
-{
-    moving = true;
-    end_position.set(10, 100, 10);
-    end_look_at.set(0, 100, 0)
-
-    ui_id = "ui-2020";
 
     /* change this when done doing navigation things */
     var box = new THREE.BoxBufferGeometry(
@@ -65,20 +75,78 @@ function setup_2020()
         1
     );
 
-    var mat = new THREE.MeshBasicMaterial(
+    var mat1 = new THREE.MeshBasicMaterial(
         {
-            color: 0xffffff
+            color: 0xff0000
         }
     )
 
-    var cube = new THREE.Mesh(box, mat);
-    cube.position.set(end_look_at.x, end_look_at.y, end_look_at.z);
-    scene.add(cube);
+    var mat2 = new THREE.MeshBasicMaterial(
+        {
+            color: 0x00ff00
+        }
+    )
+
+    var cube1 = new THREE.Mesh(box, mat1);
+    cube1.position.set(-30, 100, 0);
+
+    var cube2 = new THREE.Mesh(box, mat2);
+    cube2.position.set(0, 100, -30);
+
+    scenes["ui-2022"].objects.push(cube1);
+    scenes["ui-2023"].objects.push(cube2);
 }
 
-function destruct_2020()
+var targetQuaternion;
+function setup_current(new_id)
 {
+    document.getElementById(ui_id).style.display = "none";
+    
+    previous_id = ui_id;
+    ui_id = new_id;
 
+    moving = true;
+
+    var e_pos = scenes[ui_id].end_pos;
+    var e_look = scenes[ui_id].end_look;
+
+    end_position.set(e_pos.x, e_pos.y, e_pos.z);
+    end_look_at.set(e_look.x, e_look.y, e_look.z);
+
+    var curr_objects = scenes[ui_id].objects;
+    for (let i = 0; i < curr_objects.length; i++)
+    {
+        scene.add(curr_objects[i]);
+    }
+
+    var cameraPosition = camera.position.clone();               // camera original position
+    var cameraRotation = camera.rotation.clone();               // camera original rotation
+    var cameraQuaternion = camera.quaternion.clone();           // camera original quaternion
+
+    var dummyObject = new THREE.Object3D();                     // dummy object
+
+    // set dummyObject's position, rotation and quaternion the same as the camera
+    dummyObject.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    dummyObject.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
+    dummyObject.quaternion.set(cameraQuaternion.x, cameraQuaternion.y, cameraQuaternion.z);
+
+    // lookAt object3D
+    dummyObject.lookAt(object3D);
+
+    // store its quaternion in a variable
+    targetQuaternion = dummyObject.quaternion.clone();
+}
+
+function destruct_previous()
+{
+    if (previous_id != "")
+    {
+        var curr_scene = scenes[previous_id];
+        for (let i = 0; i < curr_scene.length; i++)
+        {
+            scene.remove(curr_scene[i]);
+        }
+    }
 }
 
 function update_camera_pos(dt)
@@ -88,13 +156,17 @@ function update_camera_pos(dt)
         perc += perc_inc;
         camera.position.lerpVectors(start_position, end_position, perc);
 
-        new_look_at.lerpVectors(start_look_at, end_look_at, perc);
-        camera.lookAt(new_look_at);
+        camera.quaternion.slerp(targetQuaternion, perc);
             
         if (Math.abs(camera.position.distanceTo(end_position)) < 1e-10)
         {
             moving = false;
             document.getElementById(ui_id).style.display = "inline-block";
+
+            start_position.set(end_position.x, end_position.y, end_position.z);
+
+            destruct_previous();
+
             perc = 0;
         }
     }
@@ -125,44 +197,42 @@ function onWindowResize()
 
 document.getElementById("about-me-card").addEventListener("click", (e) =>
 {
+    previous_id = ui_id;
+    ui_id = "about-me-ui";
     document.getElementById("directory-ui").style.display = "none";
-    document.getElementById("about-me-ui").style.display = "inline-block";
+    document.getElementById(ui_id).style.display = "inline-block";
 });
 
 document.getElementById("return-card").addEventListener("click", (e) =>
 {
-    document.getElementById("directory-ui").style.display = "inline-block";
-    document.getElementById("about-me-ui").style.display = "none";
-});
-
-document.getElementById("card-2020").addEventListener("click", (e) =>
-{
-    document.getElementById("directory-ui").style.display = "none";
-    setup_2020();
-});
-
-document.getElementById("ui-2020-return").addEventListener("click", (e) =>
-{
-    document.getElementById("ui-2020").style.display = "none";
+    previous_id = ui_id;
+    ui_id = "directory-ui";
+    document.getElementById(ui_id).style.display = "none";
     document.getElementById("directory-ui").style.display = "inline-block";
 });
 
-document.getElementById("ui-2021-return").addEventListener("click", (e) =>
+/* sets up the objects and positions for the 2022 list */
+document.getElementById("card-2022").addEventListener("click", (e) =>
 {
-    document.getElementById("ui-2021").style.display = "none";
-    document.getElementById("directory-ui").style.display = "inline-block";
+    setup_current("ui-2022");
 });
 
-document.getElementById("ui-2022-return").addEventListener("click", (e) =>
+/* sets up objects and positions for directory list */
+document.getElementById("return-card-2022").addEventListener("click", (e) =>
 {
-    document.getElementById("ui-2022").style.display = "none";
-    document.getElementById("directory-ui").style.display = "inline-block";
+    setup_current("directory-ui");
 });
 
-document.getElementById("ui-2023-return").addEventListener("click", (e) =>
+/* sets up the objects and positions for the 2023 list */
+document.getElementById("card-2023").addEventListener("click", (e) =>
 {
-    document.getElementById("ui-2023").style.display = "none";
-    document.getElementById("directory-ui").style.display = "inline-block";
+    setup_current("ui-2023");
+});
+
+/* sets up objects and positions for directory list */
+document.getElementById("return-card-2023").addEventListener("click", (e) =>
+{
+    setup_current("directory-ui");
 });
 
 if ( WebGL.isWebGLAvailable() ) 
