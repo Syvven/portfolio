@@ -1,5 +1,4 @@
 import * as THREE from './node_modules/three/src/Three.js';
-import { QuadraticBezierCurve } from './node_modules/three/src/Three.js';
 import WebGL from './webGLCheck.js';
 
 var scene, renderer, camera;
@@ -9,17 +8,15 @@ var scene, renderer, camera;
 */
 
 var moving = false;
-var reached_destination = false;
 
 var start_position = new THREE.Vector3(50, 50, 50);
 var end_position = new THREE.Vector3();
 
 var start_look_at = new THREE.Vector3(0, 0, 0);
 var end_look_at = new THREE.Vector3();
-var new_look_at = new THREE.Vector3();
 
 var perc = 0;
-var perc_inc = 0.005;
+var perc_inc = 0.01;
 
 var ui_id = "directory-ui";
 var previous_id = "directory-ui";
@@ -98,7 +95,8 @@ function setup()
 }
 
 var targetQuaternion;
-function setup_current(new_id)
+var startQuaternion;
+function load_current(new_id)
 {
     document.getElementById(ui_id).style.display = "none";
     
@@ -119,33 +117,29 @@ function setup_current(new_id)
         scene.add(curr_objects[i]);
     }
 
-    var cameraPosition = camera.position.clone();               // camera original position
     var cameraRotation = camera.rotation.clone();               // camera original rotation
     var cameraQuaternion = camera.quaternion.clone();           // camera original quaternion
 
-    var dummyObject = new THREE.Object3D();                     // dummy object
+    var dummyObject = camera.clone();  
 
     // set dummyObject's position, rotation and quaternion the same as the camera
-    dummyObject.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    dummyObject.position.set(end_position.x, end_position.y, end_position.z);
     dummyObject.rotation.set(cameraRotation.x, cameraRotation.y, cameraRotation.z);
     dummyObject.quaternion.set(cameraQuaternion.x, cameraQuaternion.y, cameraQuaternion.z);
 
-    // lookAt object3D
-    dummyObject.lookAt(object3D);
+    dummyObject.lookAt(end_look_at.x, end_look_at.y, end_look_at.z);
 
     // store its quaternion in a variable
     targetQuaternion = dummyObject.quaternion.clone();
+    startQuaternion = cameraQuaternion;
 }
 
 function destruct_previous()
 {
-    if (previous_id != "")
+    var curr_scene = scenes[previous_id];
+    for (let i = 0; i < curr_scene.length; i++)
     {
-        var curr_scene = scenes[previous_id];
-        for (let i = 0; i < curr_scene.length; i++)
-        {
-            scene.remove(curr_scene[i]);
-        }
+        scene.remove(curr_scene[i]);
     }
 }
 
@@ -156,7 +150,7 @@ function update_camera_pos(dt)
         perc += perc_inc;
         camera.position.lerpVectors(start_position, end_position, perc);
 
-        camera.quaternion.slerp(targetQuaternion, perc);
+        camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, perc);
             
         if (Math.abs(camera.position.distanceTo(end_position)) < 1e-10)
         {
@@ -164,6 +158,7 @@ function update_camera_pos(dt)
             document.getElementById(ui_id).style.display = "inline-block";
 
             start_position.set(end_position.x, end_position.y, end_position.z);
+            start_look_at.set(end_look_at.x, end_look_at.y, end_look_at.z);
 
             destruct_previous();
 
@@ -205,34 +200,34 @@ document.getElementById("about-me-card").addEventListener("click", (e) =>
 
 document.getElementById("return-card").addEventListener("click", (e) =>
 {
-    previous_id = ui_id;
-    ui_id = "directory-ui";
     document.getElementById(ui_id).style.display = "none";
     document.getElementById("directory-ui").style.display = "inline-block";
+    previous_id = ui_id;
+    ui_id = "directory-ui";
 });
 
 /* sets up the objects and positions for the 2022 list */
 document.getElementById("card-2022").addEventListener("click", (e) =>
 {
-    setup_current("ui-2022");
-});
-
-/* sets up objects and positions for directory list */
-document.getElementById("return-card-2022").addEventListener("click", (e) =>
-{
-    setup_current("directory-ui");
+    load_current("ui-2022");
 });
 
 /* sets up the objects and positions for the 2023 list */
 document.getElementById("card-2023").addEventListener("click", (e) =>
 {
-    setup_current("ui-2023");
+    load_current("ui-2023");
+});
+
+/* sets up objects and positions for directory list */
+document.getElementById("return-card-2022").addEventListener("click", (e) =>
+{
+    load_current("directory-ui");
 });
 
 /* sets up objects and positions for directory list */
 document.getElementById("return-card-2023").addEventListener("click", (e) =>
 {
-    setup_current("directory-ui");
+    load_current("directory-ui");
 });
 
 if ( WebGL.isWebGLAvailable() ) 
