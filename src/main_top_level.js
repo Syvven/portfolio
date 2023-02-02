@@ -65,6 +65,10 @@ function setup()
     camera.position.set(start_position.x, start_position.y, start_position.z);
     camera.lookAt( start_look_at );
 
+    const light = new THREE.AmbientLight( 0xffffff, 1, 100 );
+    light.position.set( 0,100,0 );
+    scene.add( light );
+
     /* change this when done doing navigation things */
     var box = new THREE.BoxBufferGeometry(
         1,
@@ -72,26 +76,31 @@ function setup()
         1
     );
 
-    var mat1 = new THREE.MeshBasicMaterial(
+    var mat1 = new THREE.MeshPhongMaterial(
         {
             color: 0xff0000
         }
     )
 
-    var mat2 = new THREE.MeshBasicMaterial(
+    var mat2 = new THREE.MeshPhongMaterial(
         {
             color: 0x00ff00
         }
     )
 
-    var cube1 = new THREE.Mesh(box, mat1);
-    cube1.position.set(-30, 100, 0);
-
-    var cube2 = new THREE.Mesh(box, mat2);
-    cube2.position.set(0, 100, -30);
-
-    scenes["ui-2022"].objects.push(cube1);
-    scenes["ui-2023"].objects.push(cube2);
+    var radius = 30;
+    for (let i = 0; i < 10; i++)
+    {
+        var angle = i * Math.PI*2 / 10;
+        var newPos1 = new THREE.Vector3(Math.cos(angle)*radius-60, 100, Math.sin(angle)*radius);
+        var newPos2 = new THREE.Vector3(Math.cos(angle)*radius, 100, Math.sin(angle)*radius-60);
+        var cube1 = new THREE.Mesh(box, mat1);
+        var cube2 = new THREE.Mesh(box, mat2);
+        cube1.position.set(newPos1.x, newPos1.y, newPos1.z);
+        cube2.position.set(newPos2.x, newPos2.y, newPos2.z);
+        scenes["ui-2022"].objects.push(cube1);
+        scenes["ui-2023"].objects.push(cube2);
+    }
 }
 
 var targetQuaternion;
@@ -136,7 +145,7 @@ function load_current(new_id)
 
 function destruct_previous()
 {
-    var curr_scene = scenes[previous_id];
+    var curr_scene = scenes[previous_id].objects;
     for (let i = 0; i < curr_scene.length; i++)
     {
         scene.remove(curr_scene[i]);
