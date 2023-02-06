@@ -92,8 +92,9 @@ function setup()
     for (let i = 0; i < 10; i++)
     {
         var angle = i * Math.PI*2 / 10;
+        var angle2 = (i+0.5) * Math.PI*2/10;
         var newPos1 = new THREE.Vector3(Math.cos(angle)*radius-60, 100, Math.sin(angle)*radius);
-        var newPos2 = new THREE.Vector3(Math.cos(angle)*radius, 100, Math.sin(angle)*radius-60);
+        var newPos2 = new THREE.Vector3(Math.cos(angle2)*radius, 100, Math.sin(angle2)*radius-60);
         var cube1 = new THREE.Mesh(box, mat1);
         var cube2 = new THREE.Mesh(box, mat2);
         cube1.position.set(newPos1.x, newPos1.y, newPos1.z);
