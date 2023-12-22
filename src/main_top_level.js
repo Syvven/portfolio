@@ -1,5 +1,6 @@
 import * as THREE from './node_modules/three/src/Three.js';
 import WebGL from './webGLCheck.js';
+import Kiwi from './kiwi.js'
 
 var scene, renderer, camera;
 
@@ -70,38 +71,55 @@ function setup()
     scene.add( light );
 
     /* change this when done doing navigation things */
-    var box = new THREE.BoxBufferGeometry(
-        1,
-        1,
-        1
-    );
 
-    var mat1 = new THREE.MeshPhongMaterial(
-        {
-            color: 0xff0000
-        }
-    )
+    var radius = 80;
 
-    var mat2 = new THREE.MeshPhongMaterial(
-        {
-            color: 0x00ff00
-        }
-    )
+    var i = 0;
 
-    var radius = 30;
-    for (let i = 0; i < 10; i++)
+    var angle = i * Math.PI*2 / 10;
+    var angle2 = (i+0.5) * Math.PI*2/10;
+
+    var rot1 = new THREE.Vector3(0, radians(90), 0);
+    var rot2 = new THREE.Vector3(0, 0, 0);
+
+    var newPos1 = new THREE.Vector3(Math.cos(angle)*radius-radius-20, 98, Math.sin(angle)*radius);
+    var newPos2 = new THREE.Vector3(Math.cos(angle2)*radius, 98, Math.sin(angle2)*radius-radius-20);
+
+    var cube1 = new Kiwi(2);
+    cube1.load_kiwi(newPos1, rot1);
+    var cube2 = new Kiwi(2);
+    cube2.load_kiwi(newPos2, rot2);
+
+    scenes["ui-2022"].objects.push(cube1);
+    scenes["ui-2023"].objects.push(cube2);
+
+    for (; i < 10; i++)
     {
         var angle = i * Math.PI*2 / 10;
         var angle2 = (i+0.5) * Math.PI*2/10;
-        var newPos1 = new THREE.Vector3(Math.cos(angle)*radius-60, 100, Math.sin(angle)*radius);
-        var newPos2 = new THREE.Vector3(Math.cos(angle2)*radius, 100, Math.sin(angle2)*radius-60);
-        var cube1 = new THREE.Mesh(box, mat1);
-        var cube2 = new THREE.Mesh(box, mat2);
-        cube1.position.set(newPos1.x, newPos1.y, newPos1.z);
-        cube2.position.set(newPos2.x, newPos2.y, newPos2.z);
+        var newPos1 = new THREE.Vector3(Math.cos(angle)*radius-radius-20, 98, Math.sin(angle)*radius);
+        var newPos2 = new THREE.Vector3(Math.cos(angle2)*radius, 98, Math.sin(angle2)*radius-radius-20);
+
+        var cube1 = new Kiwi(2);
+        cube1.load_kiwi(newPos1, rot1);
+        var cube2 = new Kiwi(2);
+        cube2.load_kiwi(newPos2, rot2);
+
         scenes["ui-2022"].objects.push(cube1);
         scenes["ui-2023"].objects.push(cube2);
     }
+
+    /* 
+        Projects I should include:
+            -> raytracer
+            -> path planning
+            -> RT-RRT*
+            -> IK
+            -> cloth/water
+    */
+
+    /* raytracer */
+
 }
 
 var targetQuaternion;
@@ -124,7 +142,7 @@ function load_current(new_id)
     var curr_objects = scenes[ui_id].objects;
     for (let i = 0; i < curr_objects.length; i++)
     {
-        scene.add(curr_objects[i]);
+        scene.add(curr_objects[i].obj);
     }
 
     var cameraRotation = camera.rotation.clone();               // camera original rotation
@@ -148,9 +166,7 @@ function destruct_previous()
 {
     var curr_scene = scenes[previous_id].objects;
     for (let i = 0; i < curr_scene.length; i++)
-    {
-        scene.remove(curr_scene[i]);
-    }
+        scene.remove(curr_scene[i].obj);
 }
 
 function update_camera_pos(dt)
@@ -189,6 +205,73 @@ function animate()
 
     renderer.render( scene, camera );
 }
+
+document.addEventListener( 'keydown', (e) => {
+    switch (e.code) {
+        case 'ArrowUp':
+        case 'KeyW':
+            moveForward = true;
+            moving = true;
+            break;
+
+        case 'ArrowLeft':
+        case 'KeyA':
+            moveLeft = true;
+            moving = true;
+            break;
+
+        case 'ArrowDown':
+        case 'KeyS':
+            moveBackward = true;
+            moving = true;
+            break;
+
+        case 'ArrowRight':
+        case 'KeyD':
+            moveRight = true;
+            moving = true;
+            break;
+        case 'Space':
+            paused = !paused;
+    }
+    if (moveForward && moveBackward) {
+        if (!(moveLeft && moveRight)) {
+            if (moveLeft || moveRight) {
+                moving = false;
+            }
+        }
+    }
+});
+
+document.addEventListener( 'keyup', (e) => {
+    switch ( e.code ) {
+
+        case 'ArrowUp':
+        case 'KeyW':
+            moveForward = false;
+            break;
+
+        case 'ArrowLeft':
+        case 'KeyA':
+            moveLeft = false;
+            break;
+
+        case 'ArrowDown':
+        case 'KeyS':
+            moveBackward = false;
+            break;
+
+        case 'ArrowRight':
+        case 'KeyD':
+            moveRight = false;
+            break;
+
+    }
+    if (!(moveForward || moveBackward || moveLeft || moveRight)) {
+        moving = false;
+        mixer.setTime(1.905);
+    }
+});
 
 window.addEventListener( 'resize', onWindowResize, false );
 function onWindowResize()
@@ -251,4 +334,8 @@ else
 {
     const warning = WebGL.getWebGLErrorMessage();
     document.getElementById( 'container' ).appendChild( warning );
+}
+
+function radians(degrees) {
+    return degrees * (Math.PI / 180);
 }
